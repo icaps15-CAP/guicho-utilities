@@ -114,3 +114,35 @@
 @export
 (defun approximate (x divisor)
   (* divisor (floor x divisor)))
+
+@export
+(defun subst-1 (new old tree &key (test #'eql))
+  (let ((first t))
+    (subst
+     new old tree :test
+     (lambda (e1 e2)
+       (let ((result (and first (funcall test e1 e2))))
+	 (when result
+	   (setf first nil)
+	   result))))))
+
+@export
+(defun nsubst-1 (new old tree &key (test #'eql))
+  (let ((first t))
+    (nsubst
+     new old tree :test
+     (lambda (e1 e2)
+       (let ((result (and first (funcall test e1 e2))))
+	 (when result
+	   (setf first nil)
+	   result))))))
+
+;; (subst-1 2 1 '(8 8 6 (4 7 1 6) 1 9 3))
+
+@export
+(defun walk-tree (fn tree)
+  (funcall fn tree
+	   (lambda (branch)
+	     (mapcar (lambda (branch)
+		       (walk-tree fn branch))
+		     branch))))
