@@ -22,6 +22,7 @@
                :alexandria
 			   :cl-annot)
   :components ((:module "src"
+			:serial t   	
                 :components
                 ((:file :package)
 				 (:file :declaim)
@@ -33,7 +34,8 @@
 				 (:file :globals)
 				 (:file :classes)
 				 (:file :debug)
-				 (:file :reader))))
+				 (:file :reader)
+				 (:file :array))))
   :description "Personal utilities for Masataro Asai(guicho2.71828@gmail.com)."
   :long-description
   #.(with-open-file (stream (merge-pathnames
