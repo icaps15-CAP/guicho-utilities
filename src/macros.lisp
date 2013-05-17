@@ -6,23 +6,23 @@
 @export
 @doc "define a method in which the call is delegated to another object."
 (defmacro delegate-method
-	(method-name (&rest var-class-form))
+    (method-name (&rest var-class-form))
   `(defmethod ,method-name
-	   ,(mapcar (lambda (d)
-				  (if (consp d)
-					  (if (second d)
-						  (list (first d)
-								(second d))
-						  (first d))
-					  d))
-				var-class-form)
-	 (,method-name 
-	  ,@(mapcar (lambda (d)
-				  (if (consp d)
-					  (or (third d)
-						  (first d))
-					  d))
-				var-class-form))))
+       ,(mapcar (lambda (d)
+		  (if (consp d)
+		      (if (second d)
+			  (list (first d)
+				(second d))
+			  (first d))
+		      d))
+		var-class-form)
+     (,method-name 
+      ,@(mapcar (lambda (d)
+		  (if (consp d)
+		      (or (third d)
+			  (first d))
+		      d))
+		var-class-form))))
 
 @eval-always
 @export
@@ -30,9 +30,9 @@
 no care for multiple-evaluation."
 (defmacro with-memoising-slot ((slot instance) &body body)
   `(if (slot-boundp ,instance ',slot)
-	   (slot-value ,instance ',slot)
-	   (setf (slot-value ,instance ',slot)
-			 (progn ,@body))))
+       (slot-value ,instance ',slot)
+       (setf (slot-value ,instance ',slot)
+	     (progn ,@body))))
 
 @eval-always
 @export
@@ -40,9 +40,9 @@ no care for multiple-evaluation."
  the arguments."
 (defmacro define-permutation-methods (name args &body body)
   `(progn
-	 ,@(mapcar (lambda (arglst)
-				`(defmethod ,name ,arglst ,@body))
-			  (permutations-of args))))
+     ,@(mapcar (lambda (arglst)
+		 `(defmethod ,name ,arglst ,@body))
+	       (permutations-of args))))
 
 ;; (define-permutation-methods a ((a lst) (b lst) c)
 ;;   (append a b))
@@ -50,87 +50,52 @@ no care for multiple-evaluation."
 @export
 (defun permutations-of (lst)
   (if (cdr lst)
-	  (iter appender
-		(for after on lst)
-		(for e = (car after))
-		(for rest = (append before (cdr after)))
-		(iter
-		  (for perm in (permutations-of rest))
-		  (in appender (collect (cons e perm))))
-		(collect e into before))
-	  (list lst)))
+      (iter appender
+	    (for after on lst)
+	    (for e = (car after))
+	    (for rest = (append before (cdr after)))
+	    (iter
+	      (for perm in (permutations-of rest))
+	      (in appender (collect (cons e perm))))
+	    (collect e into before))
+      (list lst)))
 
 @eval-always
 @export
 (defmacro bias-if (bias then &optional else)
   `(if (d< (drandom 1.0d0) ,bias)
-	   ,then
-	   ,else))
+       ,then
+       ,else))
 
 @eval-always
 @export
 (defmacro funcall-when (fun &rest args)
   (once-only (fun)
-	`(when ,fun
-	   (funcall ,fun ,@args))))
+    `(when ,fun
+       (funcall ,fun ,@args))))
 
 @eval-always
 @export
 (defmacro funcall-when-or-pass (fun &rest args)
   (once-only (fun)
-	`(if ,fun
-		 (funcall ,fun ,@args)
-		 t)))
+    `(if ,fun
+	 (funcall ,fun ,@args)
+	 t)))
 
 @eval-always
 @export
 (defmacro alias (name original)
   (assert (symbolp name))
   (if (symbolp original)
-	  `(call-alias ',name (function ,original))
-	  (if (eq (car original) 'defun)
-		  (with-gensyms (funsym)
-			`(let ((,funsym ,original))
-			   (call-alias ,name (symbol-function ,funsym)))))))
+      `(call-alias ',name (function ,original))
+      (if (eq (car original) 'defun)
+	  (with-gensyms (funsym)
+	    `(let ((,funsym ,original))
+	       (call-alias ,name (symbol-function ,funsym)))))))
 
 
 @export
 (defun call-alias (name fn)
   (print name)
   (setf (symbol-function name)
-		fn))
-
-
-@eval-always
-(defmacro with-iter-array-row-major ((&optional instance i) array
-									 &body body)
-  (once-only (array)
-	(unless i (setf i (gensym "I")))
-	(unless instance (setf instance (gensym "INSTANCE")))
-	`(iter (for ,i below (array-total-size ,array))
-		   (declare (ignorable ,i))
-		   (symbol-macrolet ((,instance (row-major-aref ,array ,i)))
-			 ,@body))))
-
-(defun form-iteration (subscript array axis-number body)
-  `(iter (for ,subscript below (array-dimension ,array ,axis-number))
-		 ,body))
-
-(defun form-iter-array (subscripts array body)
-  (iter (for subscript in (reverse subscripts))
-		(for axis-number downfrom (1- (length subscripts)))
-		(for inner-body previous formed-body initially body)
-		(for formed-body = 
-			 (form-iteration subscript array axis-number inner-body))
-		(finally (return formed-body))))
-
-@eval-always
-(defmacro with-iter-array ((instance &rest subscripts)
-						   array &body body)
-  (once-only (array)
-	(unless instance (setf instance (gensym "INSTANCE")))
-	(form-iter-array
-	 subscripts
-	 array
-	 `(symbol-macrolet ((,instance (aref ,array ,@subscripts)))
-		,@body))))
+	fn))

@@ -1,12 +1,12 @@
 #|
-  This file is a part of guicho-utilities project.
-  Copyright (c) 2013 guicho (guicho2.71828@gmail.com)
+This file is a part of guicho-utilities project.
+Copyright (c) 2013 guicho (guicho2.71828@gmail.com)
 |#
 
 #|
-  Personal utilities for Masataro Asai(guicho2.71828@gmail.com).
+Personal utilities for Masataro Asai(guicho2.71828@gmail.com).
 
-  Author: guicho (guicho2.71828@gmail.com)
+Author: guicho (guicho2.71828@gmail.com)
 |#
 
 (in-package :cl-user)
@@ -19,8 +19,8 @@
   :author "guicho"
   :license "LLGPL"
   :depends-on (:iterate
-               :alexandria
-			   :cl-annot)
+		:alexandria
+		:cl-annot)
   :components ((:module "src"
 			:serial t   	
                 :components
