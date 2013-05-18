@@ -20,6 +20,7 @@ Author: guicho (guicho2.71828@gmail.com)
   :license "LLGPL"
   :depends-on (:iterate
 		:alexandria
+		:swank
 		:cl-annot)
   :components ((:module "src"
 			:serial t   	
