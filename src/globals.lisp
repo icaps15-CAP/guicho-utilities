@@ -1,6 +1,6 @@
 
 (in-package :guicho-utilities)
-(annot:enable-annot-syntax)
+(use-syntax :annot)
 
 @export
 (defparameter *main-thread-output* *standard-output*)

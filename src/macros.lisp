@@ -1,6 +1,6 @@
 
 (in-package :guicho-utilities)
-(annot:enable-annot-syntax)
+(use-syntax :annot)
 
 @eval-always
 @export

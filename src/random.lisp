@@ -1,6 +1,6 @@
 
 (in-package :guicho-utilities)
-(annot:enable-annot-syntax)
+(use-syntax :annot)
 
 @export
 @doc "gaussian random algorithm with box-muller method."

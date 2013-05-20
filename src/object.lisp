@@ -1,7 +1,7 @@
 
 
 (in-package :guicho-utilities)
-(annot:enable-annot-syntax)
+(use-syntax :annot)
 
 @export
 (defclass recursive-print-mixin () ())

@@ -1,6 +1,6 @@
 
 (in-package :guicho-utilities)
-(enable-annot-syntax)
+(use-syntax :annot)
 
 @export
 (defgeneric check-object-inherits-class (obj class))
