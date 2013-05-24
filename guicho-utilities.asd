@@ -21,7 +21,7 @@ Author: guicho (guicho2.71828@gmail.com)
   :depends-on (:iterate
 		:alexandria
 		:swank
-		:cl-annot)
+		:cl-syntax-annot)
   :components ((:module "src"
 			:serial t   	
                 :components

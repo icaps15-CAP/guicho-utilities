@@ -1,24 +1,24 @@
 
 (in-package :guicho-utilities)
-(annot:enable-annot-syntax)
+(use-syntax :annot)
 
 @export
 @doc "type: evaluated. @example (define-typed-op d+ + 'double-float)"
 (defmacro define-typed-op (name op type
-						   &key
-						   (return-value-on t)
-						   (input-value-on t))
+			   &key
+			   (return-value-on t)
+			   (input-value-on t))
   `(defmacro ,name (&rest args)
-	 (let ((the-args
-			,(if input-value-on
-				 `(mapcar #'(lambda (argsym)
-							`(the ,',type ,argsym))
-						  args)
-				 `args)))
-	   ,(if return-value-on
-			``(the ,',type
-				(,',op ,@the-args))
-			``(,',op ,@the-args)))))
+     (let ((the-args
+	    ,(if input-value-on
+		 `(mapcar #'(lambda (argsym)
+			      `(the ,',type ,argsym))
+			  args)
+		 `args)))
+       ,(if return-value-on
+	    ``(the ,',type
+		(,',op ,@the-args))
+	    ``(,',op ,@the-args)))))
 
 ;; @eval-always
 ;; @export
@@ -192,18 +192,18 @@
 @doc "approximated ="
 (defun =~ (&rest args)
   (let ((x1 (first args))
-		(x2 (second args)))
-	(and (< (abs (- x2 x1)) +delta+)
-		 (or (null (third args))
-			 (apply #'=~ (cdr args))))))
+	(x2 (second args)))
+    (and (< (abs (- x2 x1)) +delta+)
+	 (or (null (third args))
+	     (apply #'=~ (cdr args))))))
 
 @export
 @doc "approximated ="
 (defun d=~ (&rest args)
   (let ((x1 (first args))
-		(x2 (second args)))
-	@type *desired-type* x1
-	@type *desired-type* x2
-	(and (d< (dabs (d- x2 x1)) +delta+)
-		 (or (null (third args))
-			 (apply #'d=~ (cdr args))))))
+	(x2 (second args)))
+    @type *desired-type* x1
+    @type *desired-type* x2
+    (and (d< (dabs (d- x2 x1)) +delta+)
+	 (or (null (third args))
+	     (apply #'d=~ (cdr args))))))

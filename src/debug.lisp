@@ -1,6 +1,7 @@
 
 (in-package :guicho-utilities)
-(enable-annot-syntax)
+(use-syntax :annot)
+
 
 @export
 (defun break+ (&rest args)
