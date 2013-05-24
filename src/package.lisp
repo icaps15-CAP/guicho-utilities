@@ -1,6 +1,6 @@
 
 (in-package :cl-user)
-(use-syntax :annot)
+(defpackage guicho-utilities
   (:use :cl
 	:cl-syntax
 	:anaphora
@@ -19,5 +19,3 @@
    :class-direct-subclasses
    :slot-definition-name
    ))
-
-
