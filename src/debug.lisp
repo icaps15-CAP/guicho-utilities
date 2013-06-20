@@ -22,3 +22,12 @@
 	  ,@body
        (swank::profile-report)
        (swank::unprofile-all))))
+
+@eval-always
+@export
+(defmacro with-tracing ((&rest symbols) &body body)
+  `(progn
+     (trace ,@symbols)
+     (unwind-protect
+	  ,@body
+       (untrace ,@symbols))))
