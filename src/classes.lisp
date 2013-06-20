@@ -54,3 +54,77 @@
 										(second class-order))
   (when (third class-order)
 	(check-object-inherits-class-in-orders obj (cdr class-order))))
+
+
+
+
+(defun class-slot-names (c)
+  (mapcar #'slot-definition-name (class-slots c)))
+
+@export
+(defmacro define-constructor (class-spec)
+  (let* ((c (find-class class-spec))
+	 (keys (class-slot-names c)))
+    `(defun ,(class-name c) (&rest args &key ,@keys)
+	 (declare (ignore ,@keys))
+	 (apply #'make-instance ,c args))))
+
+(defun form-reader-method (c name)
+  (check-type name symbol)
+  (with-gensyms (instance)
+    `(progn
+       (ensure-generic-function ',name)
+       (defmethod ,name ((,instance ,(class-name c)))
+	 (slot-value ,instance ',name)))))
+
+@export
+(defmacro define-readers (class-spec &rest slot-names)
+  (let* ((c (find-class class-spec))
+	 (truenames (class-slot-names c)))
+    (if (null slot-names)
+	(let ((names truenames))
+	  `(list
+	     ,@(mapcar (curry #'form-reader-method c)  names)))
+	(let ((names (intersection truenames slot-names))
+	      (invalid-names (set-difference slot-names truenames)))
+	  `(progn
+	     (warn "Following arguments weren't valid slot names ~
+                    for ~a and so they are ignored: ~%~
+                    ~4t~a" ',(class-name c) ',invalid-names)
+	     (list ,@(mapcar (curry #'form-reader-method c)  names)))))))
+
+(defun form-writer-method (c name)
+  (check-type name symbol)
+  (with-gensyms (instance new-value)
+    `(progn
+       (ensure-generic-function '(setf ,name))
+       (defmethod (setf ,name) (,new-value (,instance ,(class-name c)))
+	 (setf (slot-value ,instance ',name) ,new-value)))))
+
+@export
+(defmacro define-writers (class-spec &rest slot-names)
+  (let* ((c (find-class class-spec))
+	 (truenames (class-slot-names c)))
+    (if (null slot-names)
+	(let ((names truenames))
+	  `(list
+	     ,@(mapcar (curry #'form-writer-method c)  names)))
+	(let ((names (intersection truenames slot-names))
+	      (invalid-names (set-difference slot-names truenames)))
+	  `(progn
+	     (warn "Following arguments weren't valid slot names ~
+                    for ~a and so they are ignored: ~%~
+                    ~4t~a" ',(class-name c) ',invalid-names)
+	     (list ,@(mapcar (curry #'form-writer-method c)  names)))))))
+
+@export
+(defmacro define-accessors (class-spec &rest slot-names)
+  `(append
+     (define-readers ,class-spec ,@slot-names)
+     (define-writers ,class-spec ,@slot-names)))
+
+@export
+(defmacro define-class-utils (class-spec &rest slot-names)
+  `(cons
+    (define-constructor ,class-spec)
+    (define-accessors ,class-spec ,@slot-names)))
