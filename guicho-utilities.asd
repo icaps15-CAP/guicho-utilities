@@ -20,23 +20,25 @@ Author: guicho (guicho2.71828@gmail.com)
   :license "LLGPL"
   :depends-on (:iterate
 		:alexandria
+		:trivial-cltl2
 		:swank
 		:cl-syntax-annot)
   :components ((:module "src"
 			:serial t   	
-                :components
-                ((:file :package)
-				 (:file :declaim)
-				 (:file :typed-ops)
-				 (:file :utilities)
-				 (:file :macros)
-				 (:file :random)
-				 (:file :object)
-				 (:file :globals)
-				 (:file :classes)
-				 (:file :debug)
-				 (:file :reader)
-				 (:file :array))))
+			:components
+			((:file :package)
+			 (:file :environment)
+			 (:file :declaim)
+			 (:file :typed-ops)
+			 (:file :utilities)
+			 (:file :macros)
+			 (:file :random)
+			 (:file :object)
+			 (:file :globals)
+			 (:file :classes)
+			 (:file :debug)
+			 (:file :reader)
+			 (:file :array))))
   :description "Personal utilities for Masataro Asai(guicho2.71828@gmail.com)."
   :long-description
   #.(with-open-file (stream (merge-pathnames

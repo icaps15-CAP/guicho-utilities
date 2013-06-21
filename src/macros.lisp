@@ -100,7 +100,3 @@ no care for multiple-evaluation."
   (setf (symbol-function name)
 	fn))
 
-@export
-(defmacro print-environment (&environment env)
-  ;;(print env)
-  '(progn))

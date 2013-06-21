@@ -3,6 +3,7 @@
 (defpackage guicho-utilities
   (:use :cl
 	:cl-syntax
+	:trivial-cltl2
 	:anaphora
 	:annot
 	:annot.class
