@@ -12,11 +12,8 @@
 	:annot.slot
 	:trivial-timers
 	:iterate
-	:alexandria)
-  (:shadowing-import-from
-   :closer-mop
-   :class-slots
-   :class-precedence-list
-   :class-direct-subclasses
-   :slot-definition-name
-   ))
+	:alexandria
+	:closer-mop)
+  (:shadow :standard-generic-function
+	   :defmethod
+	   :defgeneric))
