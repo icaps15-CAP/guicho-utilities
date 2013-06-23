@@ -1,6 +1,7 @@
 
 (in-package :cl-user)
 (defpackage guicho-utilities
+  (:nicknames :gu)
   (:use :cl
 	:cl-syntax
 	:trivial-cltl2

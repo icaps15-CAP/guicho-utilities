@@ -1,5 +1,5 @@
 
-(in-package :guicho-utilities)
+(in-package :gu)
 (use-syntax :annot)
 
 @export
