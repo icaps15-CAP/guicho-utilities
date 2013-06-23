@@ -14,6 +14,7 @@
 	:iterate
 	:alexandria
 	:closer-mop)
-  (:shadow :standard-generic-function
-	   :defmethod
-	   :defgeneric))
+  (:shadowing-import-from :cl
+			  :standard-generic-function
+			  :defmethod
+			  :defgeneric))
