@@ -68,6 +68,7 @@
   (call-define-constructor class-spec))
 
 (defun call-define-constructor (class-spec)
+  (check-type class-spec symbol)
   `(eval-when (:load-toplevel :execute)
      (setf (fdefinition ',class-spec)
 	   (compile nil
