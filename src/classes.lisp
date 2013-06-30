@@ -70,13 +70,15 @@
 (defun call-define-constructor (class-spec)
   (check-type class-spec symbol)
   `(eval-when (:load-toplevel :execute)
-     (setf (fdefinition ',class-spec)
-	   (compile nil
-		    (let* ((c (find-class ',class-spec))
-			   (keys (class-slot-names c)))
-		      `(lambda (&rest args &key ,@keys)
-			 (declare (ignore ,@keys))
-			 (apply #'make-instance ,c args)))))))
+     (compile ',class-spec
+	      (let* ((c (find-class ',class-spec))
+		     (keys (class-slot-names c)))
+		`(lambda (&rest args &key ,@keys)
+		   (declare (ignore ,@keys))
+		   (apply #'make-instance ,c args))))
+     ;; (setf (fdefinition ',class-spec)
+     ;; 	   )
+     ))
 
 (defun form-reader-method (c name)
   (check-type name symbol)
