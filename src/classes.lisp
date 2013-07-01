@@ -59,17 +59,27 @@
 
 
 @eval-always
+@export
 (defun class-slot-names (c)
   (ensure-finalized c)
   (mapcar #'slot-definition-name (class-slots c)))
 
 @export
 (defmacro define-constructor (class-spec)
-  (let* ((c (find-class class-spec))
-	 (keys (class-slot-names c)))
-    `(defun ,(class-name c) (&rest args &key ,@keys)
-	 (declare (ignore ,@keys))
-	 (apply #'make-instance ,c args))))
+  (call-define-constructor class-spec))
+
+(defun call-define-constructor (class-spec)
+  (check-type class-spec symbol)
+  `(eval-when (:load-toplevel :execute)
+     (compile ',class-spec
+	      (let* ((c (find-class ',class-spec))
+		     (keys (class-slot-names c)))
+		`(lambda (&rest args &key ,@keys)
+		   (declare (ignore ,@keys))
+		   (apply #'make-instance ,c args))))
+     ;; (setf (fdefinition ',class-spec)
+     ;; 	   )
+     ))
 
 (defun form-reader-method (c name)
   (check-type name symbol)
