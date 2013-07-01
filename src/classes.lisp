@@ -58,7 +58,7 @@
 
 
 
-
+@eval-always
 (defun class-slot-names (c)
   (ensure-finalized c)
   (mapcar #'slot-definition-name (class-slots c)))
