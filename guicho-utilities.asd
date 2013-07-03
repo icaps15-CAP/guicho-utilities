@@ -38,7 +38,8 @@ Author: guicho (guicho2.71828@gmail.com)
 			 (:file :classes)
 			 (:file :debug)
 			 (:file :reader)
-			 (:file :array))))
+			 (:file :array)
+			 (:file :symbol))))
   :description "Personal utilities for Masataro Asai(guicho2.71828@gmail.com)."
   :long-description
   #.(with-open-file (stream (merge-pathnames
