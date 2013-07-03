@@ -139,7 +139,23 @@
 
 ;; (subst-1 2 1 '(8 8 6 (4 7 1 6) 1 9 3))
 
+
 @export
+@doc "traverse the tree in a depth-first manner. FN is
+a function of 2 arguments, the first one is a current branch,
+and the second one is the continuation funtion of 1 argument.
+When you further go down the tree call that continuation with
+ a certain branch.
+
+Example:
+(defun flatten (tree)
+  (let ((acc nil))
+    (walk-tree (lambda (branch cont)
+		 (if (consp branch)
+		     (funcall cont branch)
+		     (push branch acc)))
+	       tree)
+    (nreverse acc)))"
 (defun walk-tree (fn tree)
   (funcall fn tree
 	   (lambda (branch)
