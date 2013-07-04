@@ -1,5 +1,6 @@
 
 (in-package :guicho-utilities)
+(use-syntax :annot)
 
 @export
 @doc "concatenate the name of the symbol with `-' delimiter and
