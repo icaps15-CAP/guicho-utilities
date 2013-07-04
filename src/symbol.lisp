@@ -14,4 +14,7 @@ intern that string in the current package."
        (cdr syms)
        (concatenate 'string str "-" (symbol-name (car syms))))
       (intern str)))
-      
+
+@export
+(defun keyword-symbol (key)
+  (intern (symbol-name key)))
