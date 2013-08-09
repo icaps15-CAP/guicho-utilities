@@ -6,13 +6,14 @@
 @doc "concatenate the name of the symbol with `-' delimiter and
 intern that string in the current package."
 (defun concatenate-symbols (sym &rest syms)
-  (%concatenate-symbols syms (symbol-name sym)))
+  (%concatenate-symbols syms (format nil "~a" sym)))
 
 (defun %concatenate-symbols (syms str)
   (if syms
       (%concatenate-symbols
        (cdr syms)
-       (concatenate 'string str "-" (symbol-name (car syms))))
+       (concatenate 'string str "-"
+		    (format nil "~a" (car syms))))
       (intern str)))
 
 @export
