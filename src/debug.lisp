@@ -4,8 +4,11 @@
 
 
 @export
-(defun break+ (&rest args)
-  (break "~{~a~%~}" args))
+(defmacro break+ (&rest args)
+  `(break "~@{~a~%~10t~a~%~}"
+	  ,@(iter (for arg in args)
+		  (collect `',arg)
+		  (collect arg))))
 
 @export
 (defun break* (&rest args)
