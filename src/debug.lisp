@@ -5,7 +5,7 @@
 
 @export
 (defmacro break+ (&rest args)
-  `(break "~@{~a~%~10t~a~%~}"
+  `(break "~@{~a~2%~10t~a~2%~}"
 	  ,@(iter (for arg in args)
 		  (collect `',arg)
 		  (collect arg))))

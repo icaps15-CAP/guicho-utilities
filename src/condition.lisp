@@ -36,11 +36,11 @@ the value of restart function."
 		  binding
 		(with-gensyms (fn-name rest)
 		  (list `(,fn-name
-			  (lambda (&rest ,rest)
-			    (return-from ,block-name
-			      (apply ,function ,rest))))
+			  (&rest ,rest)
+			  (return-from ,block-name
+			    (apply #',function ,rest)))
 			`(,name (lambda (&rest ,rest)
-				  (apply ,fn-name ,rest))
+				  (apply #',fn-name ,rest))
 				,@key-value-pair)))))
 	    bindings)))
       `(block ,block-name
@@ -66,11 +66,11 @@ the value of handler function."
 		  binding
 		(with-gensyms (fn-name rest)
 		  (list `(,fn-name
-			  (lambda (&rest ,rest)
-			    (return-from ,block-name
-			      (apply ,function ,rest))))
+			  (&rest ,rest)
+			  (return-from ,block-name
+			    (apply #',function ,rest)))
 			`(,name (lambda (&rest ,rest)
-				  (apply ,fn-name ,rest))
+				  (apply #',fn-name ,rest))
 				,@key-value-pair)))))
 	    bindings)))
       `(block ,block-name
