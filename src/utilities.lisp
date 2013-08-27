@@ -162,3 +162,14 @@ Example:
 	     (mapcar (lambda (branch)
 		       (walk-tree fn branch))
 		     branch))))
+
+@export
+@doc "Categorize the elements of SEQUENCE by KEY. Returns a has table. 
+Each element is stored in a list (bucket) in the table."
+(defun categorize (sequence &key (test #'eql) (key #'identity))
+  (let ((hash (make-hash-table :test test)))
+    (map nil
+	 (lambda (elem)
+	   (push elem (gethash (funcall key elem) hash)))
+	 sequence)
+    hash))
