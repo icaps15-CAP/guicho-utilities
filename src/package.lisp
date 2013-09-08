@@ -11,7 +11,6 @@
 	:annot.eval-when
 	:annot.doc
 	:annot.slot
-	:trivial-timers
 	:iterate
 	:alexandria
 	:closer-mop)
