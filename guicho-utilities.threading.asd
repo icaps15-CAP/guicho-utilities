@@ -12,6 +12,5 @@
   :components ((:module "src"
 			:serial t   	
 			:components
-			((:file :package)
-			 (:file :threads))))
+			((:file :threads))))
   :description "Personal threading utilities for Masataro Asai(guicho2.71828@gmail.com).")
