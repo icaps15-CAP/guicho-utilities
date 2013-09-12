@@ -22,6 +22,7 @@ Author: guicho (guicho2.71828@gmail.com)
 		:alexandria
 		:trivial-cltl2
 		:swank
+                :closer-mop
 		:cl-syntax-annot)
   :components ((:module "src"
 			:serial t   	
