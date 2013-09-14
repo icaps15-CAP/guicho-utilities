@@ -2,12 +2,12 @@
 
 (defpackage guicho-utilities.threading
   (:use :cl
-	:cl-syntax
-	:annot
-	:annot.class
-	:annot.eval-when
-	:annot.doc
-	:annot.slot
+        :cl-syntax
+        :annot
+        :annot.class
+        :annot.eval-when
+        :annot.doc
+        :annot.slot
         :bordeaux-threads
         :lparallel
         :inferior-shell))

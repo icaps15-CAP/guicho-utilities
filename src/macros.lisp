@@ -9,20 +9,20 @@
     (method-name (&rest var-class-form))
   `(defmethod ,method-name
        ,(mapcar (lambda (d)
-		  (if (consp d)
-		      (if (second d)
-			  (list (first d)
-				(second d))
-			  (first d))
-		      d))
-		var-class-form)
+                  (if (consp d)
+                      (if (second d)
+                          (list (first d)
+                                (second d))
+                          (first d))
+                      d))
+                var-class-form)
      (,method-name 
       ,@(mapcar (lambda (d)
-		  (if (consp d)
-		      (or (third d)
-			  (first d))
-		      d))
-		var-class-form))))
+                  (if (consp d)
+                      (or (third d)
+                          (first d))
+                      d))
+                var-class-form))))
 
 @eval-always
 @export
@@ -32,7 +32,7 @@ no care for multiple-evaluation."
   `(if (slot-boundp ,instance ',slot)
        (slot-value ,instance ',slot)
        (setf (slot-value ,instance ',slot)
-	     (progn ,@body))))
+             (progn ,@body))))
 
 @eval-always
 @export
@@ -41,8 +41,8 @@ no care for multiple-evaluation."
 (defmacro define-permutation-methods (name args &body body)
   `(progn
      ,@(mapcar (lambda (arglst)
-		 `(defmethod ,name ,arglst ,@body))
-	       (permutations-of args))))
+                 `(defmethod ,name ,arglst ,@body))
+               (permutations-of args))))
 
 ;; (define-permutation-methods a ((a lst) (b lst) c)
 ;;   (append a b))
@@ -51,13 +51,13 @@ no care for multiple-evaluation."
 (defun permutations-of (lst)
   (if (cdr lst)
       (iter appender
-	    (for after on lst)
-	    (for e = (car after))
-	    (for rest = (append before (cdr after)))
-	    (iter
-	      (for perm in (permutations-of rest))
-	      (in appender (collect (cons e perm))))
-	    (collect e into before))
+            (for after on lst)
+            (for e = (car after))
+            (for rest = (append before (cdr after)))
+            (iter
+              (for perm in (permutations-of rest))
+              (in appender (collect (cons e perm))))
+            (collect e into before))
       (list lst)))
 
 @eval-always
@@ -79,8 +79,8 @@ no care for multiple-evaluation."
 (defmacro funcall-when-or-pass (fun &rest args)
   (once-only (fun)
     `(if ,fun
-	 (funcall ,fun ,@args)
-	 t)))
+         (funcall ,fun ,@args)
+         t)))
 
 @eval-always
 @export
@@ -89,14 +89,14 @@ no care for multiple-evaluation."
   (if (symbolp original)
       `(call-alias ',name (function ,original))
       (if (eq (car original) 'defun)
-	  (with-gensyms (funsym)
-	    `(let ((,funsym ,original))
-	       (call-alias ,name (symbol-function ,funsym)))))))
+          (with-gensyms (funsym)
+            `(let ((,funsym ,original))
+               (call-alias ,name (symbol-function ,funsym)))))))
 
 
 @export
 (defun call-alias (name fn)
   (print name)
   (setf (symbol-function name)
-	fn))
+        fn))
 

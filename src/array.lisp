@@ -6,14 +6,14 @@
 @eval-always
 @export
 (defmacro with-iter-array-row-major ((&optional instance i) array
-				     &body body)
+                                     &body body)
   (once-only (array)
     (unless i (setf i (gensym "I")))
     (unless instance (setf instance (gensym "INSTANCE")))
     `(dotimes (,i (array-total-size ,array))
        (declare (ignorable ,i))
        (symbol-macrolet ((,instance (row-major-aref ,array ,i)))
-	 ,@body))))
+         ,@body))))
 
 
 ;; (do ((temp-one 1 (1+ temp-one))
@@ -23,42 +23,42 @@
 @eval-always
 (defun form-iteration2 (subscript array axis-number body)
   (destructuring-bind (sym &optional
-			   limit1 limit2 (step 1))  subscript
+                           limit1 limit2 (step 1))  subscript
     (let ((lower-limit (if limit2 limit1 0))
-	  (upper-limit (if limit2 limit2
-			   (if limit1
-			       limit1
-			       `(array-dimension
-				 ,array ,axis-number)))))
+          (upper-limit (if limit2 limit2
+                           (if limit1
+                               limit1
+                               `(array-dimension
+                                 ,array ,axis-number)))))
       (once-only (lower-limit upper-limit step)
-	`(locally
-	     (declare (type fixnum ,lower-limit ,upper-limit ,step))
-	   (do ((,sym ,lower-limit (+ ,sym ,step)))
-	       ((< ,sym ,upper-limit))
-	     (declare (type fixnum ,sym))
-	     ,body))))))
+        `(locally
+             (declare (type fixnum ,lower-limit ,upper-limit ,step))
+           (do ((,sym ,lower-limit (+ ,sym ,step)))
+               ((< ,sym ,upper-limit))
+             (declare (type fixnum ,sym))
+             ,body))))))
 
 @eval-always
 (defun form-iter-array2 (subscripts array body)
   (iter (for subscript in (reverse subscripts))
-	(for axis-number downfrom (1- (length subscripts)))
-	(for inner-body previous formed-body initially body)
-	(for formed-body = 
-	     (form-iteration2 subscript array axis-number inner-body))
-	(finally (return formed-body))))
+        (for axis-number downfrom (1- (length subscripts)))
+        (for inner-body previous formed-body initially body)
+        (for formed-body = 
+             (form-iteration2 subscript array axis-number inner-body))
+        (finally (return formed-body))))
 
 
 @eval-always
 (defun ensure-subscripts (subscripts)
   (mapcar (lambda (sub)
-	    (typecase sub
-	      (symbol (list sub))
-	      (cons
-	       (assert (symbolp (car sub)) nil
-		       "a binding ~a is illegal because its first argument~
+            (typecase sub
+              (symbol (list sub))
+              (cons
+               (assert (symbolp (car sub)) nil
+                       "a binding ~a is illegal because its first argument~
                        is not a symbol." sub)
-	       sub)))
-	  subscripts))
+               sub)))
+          subscripts))
 
 @eval-always
 @export
@@ -68,15 +68,15 @@ subscripts:
         |(symbol lower-limit upper-limit)
         |(symbol lower-limit upper-limit step))"
 (defmacro with-iter-array ((instance &rest subscripts)
-			   array &body body)
+                           array &body body)
   (once-only (array)
     (let ((instance (or instance (gensym "INSTANCE")))
-	  (subs (ensure-subscripts subscripts)))
+          (subs (ensure-subscripts subscripts)))
       (form-iter-array2
        subs
        array
        `(symbol-macrolet ((,instance (aref ,array ,@(mapcar #'car subs))))
-	  ,@body)))))
+          ,@body)))))
 
 ;; (with-iter-array (cell i j k) (make-array '(3 3 3))
 ;;   (print cell))

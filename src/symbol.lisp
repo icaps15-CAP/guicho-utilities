@@ -13,7 +13,7 @@ intern that string in the current package."
       (%concatenate-symbols
        (cdr syms)
        (concatenate 'string str "-"
-		    (write-to-string (car syms) :escape nil)))
+                    (write-to-string (car syms) :escape nil)))
       (intern str)))
 
 @export

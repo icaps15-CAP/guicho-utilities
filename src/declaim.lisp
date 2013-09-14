@@ -9,23 +9,23 @@
 @eval-always
 @export
 (defun package-optimize-setting (&optional
-				 (speed 0)
-				 (debug 3)
-				 (safety 3)
-				 (space 3))
+                                 (speed 0)
+                                 (debug 3)
+                                 (safety 3)
+                                 (space 3))
   (setf (gethash *package*
-		 *optimization-hash-table*)
-	(list speed debug safety space)))
+                 *optimization-hash-table*)
+        (list speed debug safety space)))
 
 @eval-always
 @export
 (defmacro optimize* ()
   (destructuring-bind (speed debug safety space)
       (gethash *package*
-	       *optimization-hash-table*
-	       (list 0 3 3 3))
+               *optimization-hash-table*
+               (list 0 3 3 3))
     `(declaim (optimize (debug ,debug) (safety ,safety)
-			(space ,space) (speed ,speed)))))
+                        (space ,space) (speed ,speed)))))
 
 
 @eval-always

@@ -39,7 +39,7 @@
 ;; @export
 ;; (defun xor (a b)
 ;;   (and (not (and a b))
-;; 	   (or a b)))
+;;         (or a b)))
 
 @export
 (defun always-nil (&rest args)
@@ -67,49 +67,49 @@
 @export
 (defun collect-on-slot (s slot fn reduce-fn)
   (reduce reduce-fn
-	  (map 'list fn (slot-value s slot))))
+          (map 'list fn (slot-value s slot))))
 
 @export
 (defun collect-on-reader (s reader fn reduce-fn)
   (awhen (map 'list fn (funcall reader s))
-	 (reduce reduce-fn it)))
+         (reduce reduce-fn it)))
 
 
 @export
 (defun next-element (lst target)
   @type list lst
   (iter (for sublis on lst)
-	(finding (cadr sublis) such-that (eq target (car sublis)))))
+        (finding (cadr sublis) such-that (eq target (car sublis)))))
 
 @export
 (defun previous-element (lst target)
   @type list lst
   (iter (for elem in lst)
-	(for prev previous elem)
-	(finding prev such-that (eq target elem))))
+        (for prev previous elem)
+        (finding prev such-that (eq target elem))))
 
 @export
 (defun nsplit-list-at (lst n)
   (iter (for i below n)
-	(for sublist on lst)
-	(finally
-	 (let ((nthcdr (cdr sublist)))
-	   (setf (cdr sublist) nil)
-	   (return (list lst nthcdr))))))
-					;(nsplit-list-at '(0 1 2 3 4 5 6) 3)
+        (for sublist on lst)
+        (finally
+         (let ((nthcdr (cdr sublist)))
+           (setf (cdr sublist) nil)
+           (return (list lst nthcdr))))))
+                                        ;(nsplit-list-at '(0 1 2 3 4 5 6) 3)
 
 @export
 (defun nsplit-list-from-last (lst n)
   (mapcar #'nreverse
-	  (nreverse (nsplit-list-at (reverse lst) n))))
+          (nreverse (nsplit-list-at (reverse lst) n))))
 
-					;(nsplit-list-from-last '(0 1 2 3 4 5 6) 3)
+                                        ;(nsplit-list-from-last '(0 1 2 3 4 5 6) 3)
 
 @export
 @doc "max-min &rest args -> max, min"
 (defun max-min (&rest args)
   (values (apply #'max args)
-	  (apply #'min args)))
+          (apply #'min args)))
 
 @export
 (defun approximate (x divisor)
@@ -122,9 +122,9 @@
      new old tree :test
      (lambda (e1 e2)
        (let ((result (and first (funcall test e1 e2))))
-	 (when result
-	   (setf first nil)
-	   result))))))
+         (when result
+           (setf first nil)
+           result))))))
 
 @export
 (defun nsubst-1 (new old tree &key (test #'eql))
@@ -133,9 +133,9 @@
      new old tree :test
      (lambda (e1 e2)
        (let ((result (and first (funcall test e1 e2))))
-	 (when result
-	   (setf first nil)
-	   result))))))
+         (when result
+           (setf first nil)
+           result))))))
 
 ;; (subst-1 2 1 '(8 8 6 (4 7 1 6) 1 9 3))
 
@@ -151,17 +151,17 @@ Example:
 (defun flatten (tree)
   (let ((acc nil))
     (walk-tree (lambda (branch cont)
-		 (if (consp branch)
-		     (funcall cont branch)
-		     (push branch acc)))
-	       tree)
+                 (if (consp branch)
+                     (funcall cont branch)
+                     (push branch acc)))
+               tree)
     (nreverse acc)))"
 (defun walk-tree (fn tree)
   (funcall fn tree
-	   (lambda (branch)
-	     (mapcar (lambda (branch)
-		       (walk-tree fn branch))
-		     branch))))
+           (lambda (branch)
+             (mapcar (lambda (branch)
+                       (walk-tree fn branch))
+                     branch))))
 
 @export
 @doc "Categorize the elements of SEQUENCE by KEY. Returns a has table. 
@@ -169,7 +169,7 @@ Each element is stored in a list (bucket) in the table."
 (defun categorize (sequence &key (test #'eql) (key #'identity))
   (let ((hash (make-hash-table :test test)))
     (map nil
-	 (lambda (elem)
-	   (push elem (gethash (funcall key elem) hash)))
-	 sequence)
+         (lambda (elem)
+           (push elem (gethash (funcall key elem) hash)))
+         sequence)
     hash))

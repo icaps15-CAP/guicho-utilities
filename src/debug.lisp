@@ -6,30 +6,30 @@
 @export
 (defmacro break+ (&rest args)
   (let* ((last-form (lastcar args))
-	 (last last-form)
-	 (butlast (butlast args)))
+         (last last-form)
+         (butlast (butlast args)))
     (once-only (last)
       `(progn
-	 (break "~@{~a~2%~<;;~@; result:~4i~:@_~a~;~:>~2%~}"
-		,@(iter (for arg in butlast)
-			(collect `',arg)
-			(collect `(list ,arg)))
-		',last-form (list ,last))
-	 ,last))))
+         (break "~@{~a~2%~<;;~@; result:~4i~:@_~a~;~:>~2%~}"
+                ,@(iter (for arg in butlast)
+                        (collect `',arg)
+                        (collect `(list ,arg)))
+                ',last-form (list ,last))
+         ,last))))
 
 @export
 (defun break* (&rest args)
   (iter (for arg in args)
-		(break "~a" arg)))
+                (break "~a" arg)))
 
 @eval-always
 @export
 (defmacro with-profiling ((&key packages) &body body)
   `(progn
      ,@(iter (for package in packages)
-	     (collect `(swank::profile-package ,package t t)))
+             (collect `(swank::profile-package ,package t t)))
      (unwind-protect
-	  ,@body
+          ,@body
        (swank::profile-report)
        (swank::unprofile-all))))
 
@@ -39,5 +39,5 @@
   `(progn
      (trace ,@symbols)
      (unwind-protect
-	  ,@body
+          ,@body
        (untrace ,@symbols))))
