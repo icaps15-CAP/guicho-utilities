@@ -38,7 +38,7 @@ the value of restart function."
                   (list `(,fn-name
                           (&rest ,rest)
                           (return-from ,block-name
-                            (apply #',function ,rest)))
+                            (apply ,function ,rest)))
                         `(,name (lambda (&rest ,rest)
                                   (apply #',fn-name ,rest))
                                 ,@key-value-pair)))))
@@ -68,7 +68,7 @@ the value of handler function."
                   (list `(,fn-name
                           (&rest ,rest)
                           (return-from ,block-name
-                            (apply #',function ,rest)))
+                            (apply ,function ,rest)))
                         `(,name (lambda (&rest ,rest)
                                   (apply #',fn-name ,rest))
                                 ,@key-value-pair)))))
