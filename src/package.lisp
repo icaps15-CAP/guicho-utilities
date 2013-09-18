@@ -5,7 +5,6 @@
   (:use :cl
         :cl-syntax
         :trivial-cltl2
-        :anaphora
         :annot
         :annot.class
         :annot.eval-when
