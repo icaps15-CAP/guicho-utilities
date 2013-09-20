@@ -6,12 +6,21 @@
 (in-package :cl-user)
 (defpackage guicho-utilities-test
   (:use :cl
+        :alexandria
         :guicho-utilities
-        :cl-test-more))
+        :fiveam))
 (in-package :guicho-utilities-test)
 
-(plan nil)
+(def-suite :guicho-utilities)
+(in-suite :guicho-utilities)
 
-;; blah blah blah.
-
-(finalize)
+(test :categorize-by-equality
+  (let (cat)
+    (finishes
+      (setf cat (categorize-by-equality
+                 (iota 10)
+                 (lambda (a b)
+                   (= (mod a 3)
+                      (mod b 3))))))
+    (print cat)
+    (is (typep cat '(array list (3))))))

@@ -56,3 +56,7 @@ Author: guicho (guicho2.71828@gmail.com)
           seq)))
   :in-order-to ((test-op (load-op guicho-utilities-test))))
 
+(defmethod asdf:perform ((op asdf:test-op)
+			 (system (eql (asdf:find-system :guicho-utilities))))
+  (funcall (find-symbol "RUN!" (find-package :fiveam)) :guicho-utilities)
+  t)

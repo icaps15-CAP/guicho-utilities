@@ -173,3 +173,19 @@ Each element is stored in a list (bucket) in the table."
            (push elem (gethash (funcall key elem) hash)))
          sequence)
     hash))
+
+@export
+@doc "Categorize the elements of SEQUENCE according to the 2-arg equality function TEST.
+ Returns a vector of lists. Each list contains elements which are equal in the meaning of TEST."
+(defun categorize-by-equality (sequence test)
+  (reduce
+   (lambda (vector element)
+     (let ((i -1))
+       (if (find-if (lambda (bucket)
+                      (incf i)
+                      (funcall test (car bucket) element))
+                    vector)
+           (push element (aref vector i))
+           (vector-push-extend (list element) vector)))
+     vector)
+   sequence :initial-value (make-array 0 :fill-pointer 0 :adjustable t)))

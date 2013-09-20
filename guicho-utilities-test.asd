@@ -12,7 +12,8 @@
   :author "guicho"
   :license "LLGPL"
   :depends-on (:guicho-utilities
-               :cl-test-more)
+               :alexandria
+               :fiveam)
   :components ((:module "t"
                 :components
                 ((:file "guicho-utilities"))))
