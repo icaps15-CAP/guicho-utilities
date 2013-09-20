@@ -20,6 +20,7 @@ Author: guicho (guicho2.71828@gmail.com)
   :license "LLGPL"
   :depends-on (:iterate
 		:alexandria
+                :anaphora
 		:trivial-cltl2
 		:swank
                 :closer-mop
