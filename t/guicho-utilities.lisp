@@ -23,4 +23,24 @@
                    (= (mod a 3)
                       (mod b 3))))))
     (print cat)
-    (is (typep cat '(array list (3))))))
+    (is (= 3 (length cat))))
+
+  ;; intransitive
+  (flet ((next-to (a b) (or (= (1+ a) b) (= (1+ b) a))))
+    (let (cat)
+      (finishes
+        (setf cat (categorize-by-equality
+                   (shuffle (append (iota 10) (iota 10 :start 20)))
+                   #'next-to)))
+      (print '(:transitive t))
+      (print cat)
+      (is-false (= 2 (length cat)))
+
+      (finishes
+        (setf cat (categorize-by-equality
+                   (shuffle (append (iota 10) (iota 10 :start 20)))
+                   #'next-to
+                   :transitive nil)))
+      (print '(:transitive nil))
+      (print cat)
+      (is-true (= 2 (length cat))))))

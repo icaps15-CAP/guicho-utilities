@@ -177,15 +177,41 @@ Each element is stored in a list (bucket) in the table."
 @export
 @doc "Categorize the elements of SEQUENCE according to the 2-arg equality function TEST.
  Returns a vector of lists. Each list contains elements which are equal in the meaning of TEST."
-(defun categorize-by-equality (sequence test)
+(defun categorize-by-equality (sequence test &key (transitive t))
+  (if transitive
+      (%categorize-by-equality-transitive sequence test)
+      (%categorize-by-equality-intransitive sequence test)))
+
+(defun %categorize-by-equality-transitive (sequence test)
   (reduce
    (lambda (vector element)
      (let ((i -1))
        (if (find-if (lambda (bucket)
                       (incf i)
-                      (funcall test (car bucket) element))
+                      (funcall test element (first bucket)))
                     vector)
            (push element (aref vector i))
            (vector-push-extend (list element) vector)))
      vector)
    sequence :initial-value (make-array 0 :fill-pointer 0 :adjustable t)))
+
+(defun %categorize-by-equality-intransitive (sequence test)
+  (reduce
+   (lambda (acc element)
+     (if-let ((buckets (remove-if-not
+                        (lambda (bucket)
+                          (member element bucket :test test))
+                        acc)))
+       (if (= 1 (length buckets))
+           (let ((b (first buckets)))
+             (psetf (car b) element
+                    (cdr b) (cons (car b) (cdr b))))
+           (progn
+             (setf acc (reduce (lambda (prev bucket) (remove bucket prev))
+                               buckets :initial-value acc))
+             (push
+              (cons element (reduce #'append buckets :from-end t))
+              acc)))
+       (push (list element) acc))
+     acc)
+   sequence :initial-value nil))
