@@ -215,3 +215,8 @@ Each element is stored in a list (bucket) in the table."
        (push (list element) acc))
      acc)
    sequence :initial-value nil))
+
+@export
+(defmacro label1 (name args (&body fbody) &body body)
+  `(labels ((,name ,args ,fbody)) ,@body))
+
