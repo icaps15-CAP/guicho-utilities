@@ -220,3 +220,14 @@ Each element is stored in a list (bucket) in the table."
 (defmacro label1 (name args (&body fbody) &body body)
   `(labels ((,name ,args ,fbody)) ,@body))
 
+
+@export
+(defun mktemp (name)
+  (iter (for path = (merge-pathnames
+                     (format nil "~a.tmp.~x"
+                             (string-downcase name)
+                             (random MOST-POSITIVE-FIXNUM))
+                     #p"/tmp/"))
+        (unless (osicat:directory-exists-p path)
+          (ensure-directories-exist path :verbose t)
+          (return-from mktemp path))))

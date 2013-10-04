@@ -23,6 +23,7 @@ Author: guicho (guicho2.71828@gmail.com)
                 :anaphora
 		:trivial-cltl2
 		:swank
+                :osicat
                 :closer-mop
 		:cl-syntax-annot)
   :components ((:module "src"
