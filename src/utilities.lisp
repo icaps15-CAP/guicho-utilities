@@ -222,7 +222,7 @@ Each element is stored in a list (bucket) in the table."
 
 
 @export
-(defun mktemp (name)
+(defun mktemp (&optional (name "lisp"))
   (iter (for path = (merge-pathnames
                      (format nil "~a.tmp.~x"
                              (string-downcase name)
