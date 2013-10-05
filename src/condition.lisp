@@ -39,15 +39,17 @@ the value of restart function."
                           (&rest ,rest)
                           (return-from ,block-name
                             (apply ,function ,rest)))
-                        `(,name (lambda (&rest ,rest)
+                        `(,name (named-lambda ,(concatenate-symbols name 'handler)
+                                    (&rest ,rest)
                                   (apply #',fn-name ,rest))
                                 ,@key-value-pair)))))
             bindings)))
       `(block ,block-name
          (flet ,(mapcar #'first bindings2)
-           (restart-bind
-               ,(mapcar #'second bindings2)
-             ,@body))))))
+           (return-from ,block-name
+             (restart-bind
+                 ,(mapcar #'second bindings2)
+               ,@body)))))))
 
 @export
 @doc "The variation of handler-case whose behavior is the same but
@@ -69,15 +71,17 @@ the value of handler function."
                           (&rest ,rest)
                           (return-from ,block-name
                             (apply ,function ,rest)))
-                        `(,name (lambda (&rest ,rest)
+                        `(,name (named-lambda ,(concatenate-symbols name 'handler)
+                                    (&rest ,rest)
                                   (apply #',fn-name ,rest))
                                 ,@key-value-pair)))))
             bindings)))
       `(block ,block-name
          (flet ,(mapcar #'first bindings2)
-           (handler-bind
-               ,(mapcar #'second bindings2)
-             ,@body))))))
+           (return-from ,block-name
+             (handler-bind
+                 ,(mapcar #'second bindings2)
+               ,@body)))))))
 
 
 ;; (restart-return ((retry (lambda (c) (print :retry)))
@@ -107,7 +111,8 @@ the value of handler function."
                           (name function . key-value-pair)
                         binding
                       (with-gensyms (rest)
-                        `(,name (lambda (&rest ,rest)
+                        `(,name (named-lambda ,(concatenate-symbols name 'handler)
+                                    (&rest ,rest)
                                   (prog1
                                       (apply ,function ,rest)
                                     (go ,start)))
