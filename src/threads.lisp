@@ -35,3 +35,8 @@
         :output :lines)))
 
 (setf lparallel:*kernel* (make-kernel (get-core-num)))
+
+@export
+(defmacro with-timing (&body body)
+  `(let ((*trace-output* *shared-output*))
+     (time (progn ,@body))))
