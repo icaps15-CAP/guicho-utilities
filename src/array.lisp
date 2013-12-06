@@ -34,7 +34,7 @@
         `(locally
              (declare (type fixnum ,lower-limit ,upper-limit ,step))
            (do ((,sym ,lower-limit (+ ,sym ,step)))
-               ((< ,sym ,upper-limit))
+               ((<= ,upper-limit ,sym))
              (declare (type fixnum ,sym))
              ,body))))))
 
