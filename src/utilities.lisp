@@ -44,11 +44,13 @@
 @export
 (defun always-nil (&rest args)
   @ignore args
+  (warn "obsoleted. use (cl:constantly nil)")
   nil)
 
 @export
 (defun always-true (&rest args)
   @ignore args
+  (warn "obsoleted. use (cl:constantly t)")
   t)
 
 @export

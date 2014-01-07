@@ -5,6 +5,8 @@
 @export
 @doc "gaussian random algorithm with box-muller method."
 (defun gaussian-drandom (&optional (μ1 0.0d0) (σ1 1.0d0) μ2 σ2)
+  (warn "This function ~a is obsolete. use alexandria:gaussian-random"
+        'gaussian-drandom)
   (let* ((x (drandom 1.0d0))
                  (y (drandom 1.0d0))
                  (_x (dsqrt (d- (d* 2.0d0 (dlog x))))))

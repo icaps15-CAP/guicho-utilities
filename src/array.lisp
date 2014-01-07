@@ -82,5 +82,5 @@ subscripts:
 ;;   (print cell))
 
 ;; (let ((data (make-array '(3 3 3 10))))
-;;   (with-iter-array (cell i (j 1 3) (k 3) (l 3 3 2)) data
+;;   (with-iter-array (cell i (j 1 3) (k 3) (l 3 6 2)) data
 ;;     (print cell)))

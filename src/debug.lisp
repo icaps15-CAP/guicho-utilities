@@ -17,11 +17,6 @@
                 ',last-form (list ,last))
          ,last))))
 
-@export
-(defun break* (&rest args)
-  (iter (for arg in args)
-                (break "~a" arg)))
-
 @eval-always
 @export
 (defmacro with-profiling ((&key packages) &body body)

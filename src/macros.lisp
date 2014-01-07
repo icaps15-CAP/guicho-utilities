@@ -37,15 +37,27 @@ no care for multiple-evaluation."
 @eval-always
 @export
 @doc "defines methods for each of the all possible permutation of
- the arguments."
+ the arguments. For example,
+
+(define-permutation-methods a ((a lst) (b vector) c)
+  (append a b))
+
+is same as
+
+(PROGN
+ (DEFMETHOD A ((A LST) (B VECTOR) C) (APPEND A B))
+ (DEFMETHOD A ((A LST) C (B VECTOR)) (APPEND A B))
+ (DEFMETHOD A ((B VECTOR) (A LST) C) (APPEND A B))
+ (DEFMETHOD A ((B VECTOR) C (A LST)) (APPEND A B))
+ (DEFMETHOD A (C (A LST) (B VECTOR)) (APPEND A B))
+ (DEFMETHOD A (C (B VECTOR) (A LST)) (APPEND A B)))
+
+"
 (defmacro define-permutation-methods (name args &body body)
   `(progn
      ,@(mapcar (lambda (arglst)
                  `(defmethod ,name ,arglst ,@body))
                (permutations-of args))))
-
-;; (define-permutation-methods a ((a lst) (b lst) c)
-;;   (append a b))
 
 @export
 (defun permutations-of (lst)
