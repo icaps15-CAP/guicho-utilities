@@ -24,6 +24,7 @@ Author: guicho (guicho2.71828@gmail.com)
 		:trivial-cltl2
 		:swank
                 :osicat
+                :optima
                 :closer-mop
 		:cl-syntax-annot)
   :components ((:module "src"

@@ -11,6 +11,7 @@
         :annot.eval-when
         :annot.doc
         :annot.slot
+        :optima
         :iterate
         :alexandria
         :closer-mop)
