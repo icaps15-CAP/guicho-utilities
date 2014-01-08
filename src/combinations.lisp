@@ -104,18 +104,38 @@ Based on Steinhaus–Johnson–Trotter algorithm + Even's speedup
   (etypecase seq
     (cons (%combinations-of-cons seq length))))
 
+;; non-tail-recursive
+
+;; (defun %combinations-of-cons (seq length)
+;;   (if (zerop length) ;;(= length (length seq))
+;;       (list (list))
+;;       (%per-tail length seq)))
+
+;; (defun %per-tail (length tail)
+;;   (if tail
+;;       (%attach-head length tail (car tail) (%combinations-of-cons tail (1- length)))
+;;       (list)))
+
+;; (defun %attach-head (length tail head sub-combo)
+;;   (if sub-combo
+;;       (cons (cons head (car sub-combo))
+;;             (%attach-head length tail head (cdr sub-combo)))
+;;       (%per-tail length (cdr tail))))
+
+;; tail-recursive
+
 (defun %combinations-of-cons (seq length)
   (if (zerop length) ;;(= length (length seq))
       (list (list))
-      (%per-tail length seq)))
+      (%per-tail nil length seq)))
 
-(defun %per-tail (length tail)
+(defun %per-tail (acc length tail)
   (if tail
-      (%attach-head length tail (car tail) (%combinations-of-cons tail (1- length)))
-      (list)))
+      (%attach-head acc length tail (car tail) (%combinations-of-cons tail (1- length)))
+      acc))
 
-(defun %attach-head (length tail head sub-combo)
+(defun %attach-head (acc length tail head sub-combo)
   (if sub-combo
-      (cons (cons head (car sub-combo))
-            (%attach-head length tail head (cdr sub-combo)))
-      (%per-tail length (cdr tail))))
+      (%attach-head (cons (cons head (car sub-combo)) acc)
+                    length tail head (cdr sub-combo))
+      (%per-tail acc length (cdr tail))))
