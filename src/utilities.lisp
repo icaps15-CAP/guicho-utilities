@@ -198,6 +198,11 @@ Each element is stored in a list (bucket) in the table."
    sequence :initial-value (make-array 0 :fill-pointer 0 :adjustable t)))
 
 (defun %categorize-by-equality-intransitive (sequence test)
+  "Categorization based on intransitive predicate.
+For example, a relation iRj s.t. i=j+-1 is intransitive because
+3R4 and 4R5 holds but 3R5 doesn't hold.
+However we sometimes want to categorize 3,4,5,7,8,9 by adjacency e.g.
+ (3 4 5) and (7 8 9)."
   (reduce
    (lambda (acc element)
      (if-let ((buckets (remove-if-not
@@ -209,6 +214,8 @@ Each element is stored in a list (bucket) in the table."
              (psetf (car b) element
                     (cdr b) (cons (car b) (cdr b))))
            (progn
+             ;; when two buckets shares an instance, then merge such buckets e.g.
+             ;; (3 4) and (4 5) shares 4, so merge them into (3 4 5)
              (setf acc (reduce (lambda (prev bucket) (remove bucket prev))
                                buckets :initial-value acc))
              (push

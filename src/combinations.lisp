@@ -121,11 +121,12 @@ Based on Steinhaus–Johnson–Trotter algorithm + Even's speedup
 ;; combinations, implemented in a functional style
 
 @export
-(defun combinations (seq &key (length (length seq)))
+(defun combinations (seq &key length)
   "returns a list of sequences.
    each sequence is a k-combination of the original sequence."
   (etypecase seq
-    (cons (%combinations-of-cons seq (length seq) length))))
+    (cons (let ((seq-size (length seq)))
+            (%combinations-of-cons seq seq-size (or length seq-size))))))
 
 ;; non-tail-recursive
 
