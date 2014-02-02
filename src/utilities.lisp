@@ -237,6 +237,6 @@ However we sometimes want to categorize 3,4,5,7,8,9 by adjacency e.g.
                              (string-downcase name)
                              (random MOST-POSITIVE-FIXNUM))
                      #p"/tmp/"))
-        (unless (osicat:directory-exists-p path)
-          (ensure-directories-exist path :verbose t)
-          (return-from mktemp path))))
+        
+        (ensure-directories-exist path :verbose t)
+        (return-from mktemp path)))
