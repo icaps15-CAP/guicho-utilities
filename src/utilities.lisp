@@ -190,12 +190,28 @@ Each element is stored in a list (bucket) in the table."
      (let ((i -1))
        (if (find-if (lambda (bucket)
                       (incf i)
-                      (funcall test element (first bucket)))
+                      (funcall test (first bucket) element))
                     vector)
-           (push element (aref vector i))
+           (push element (cdr (aref vector i)))
            (vector-push-extend (list element) vector)))
      vector)
-   sequence :initial-value (make-array 0 :fill-pointer 0 :adjustable t)))
+   sequence :initial-value (make-array 0 :fill-pointer 0 :adjustable t))
+
+  ;; FIXME when make-hash-table accepts functions in general!
+  ;; (let ((h (make-hash-table :test test)))
+  ;;   (map nil
+  ;;        (lambda (elem)
+  ;;          (setf (gethash elem h)
+  ;;                (cons elem (gethash elem h nil))))
+  ;;        sequence)
+  ;;   (iter
+  ;;     (with count = (hash-table-count h))
+  ;;     (with vector = (make-array count :element-type '(or null (cons)) :initial-element nil))
+  ;;     (for i below count)
+  ;;     (for (k v) in-hashtable h)
+  ;;     (setf (aref vector i) v)
+  ;;     (finally (return vector))))
+  )
 
 (defun %categorize-by-equality-intransitive (sequence test)
   "Categorization based on intransitive predicate.
