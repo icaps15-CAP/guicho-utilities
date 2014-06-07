@@ -147,3 +147,30 @@ the value of handler function."
               ,default)
      (use-value (value)
        value)))
+
+@export
+(defmacro in-reply-to (clauses &body body)
+  `(handler-bind
+       ((ask-value
+         (lambda (c)
+           ,(construct-reply-handler clauses))))
+     ,@body))
+
+(defun construct-reply-handler (clauses)
+  `(match c
+     ,@(mapcar
+        (lambda (clause)
+          (handler-bind ((match-error
+                          (lambda (c)
+                            (error "Clause ~a is invalid as a variable specifier"
+                                   (match-error-values c))))) 
+            (ematch clause
+              ((list* (list name (or :in :by) by) value-body)
+               `((ask-value :name (guard name (eq ',name name))
+                            :by (guard by (eq ',by by)))
+                 (use-value (progn ,@value-body) c)))
+              ((list* (or (and (type symbol) name)
+                          (list (and (type symbol) name))) value-body)
+               `((ask-value :name (guard name (eq ',name name)))
+                 (use-value (progn ,@value-body) c))))))
+        clauses)))

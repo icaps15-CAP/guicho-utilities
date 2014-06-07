@@ -97,7 +97,7 @@
 (defun fn1 (&optional (arg (ask-for arg 1 :in fn1)))
   (print arg))
 (defun fn2 ()
-  (loop for i from 0 to 10 do (fn1)))
+  (loop for i from 0 to 10 collect (fn1)))
 (defun fn3 ()
   (let ((lst (list :a :b :c)))
     (setf (cdddr lst) lst)
@@ -115,7 +115,7 @@
 (defun fn-special1 ()
   (print (pop *queue*)))
 (defun fn-special2 ()
-  (loop for i from 0 to 10 do (fn-special1)))
+  (loop for i from 0 to 10 collect (fn-special1)))
 (defun fn-special3 ()
   (let ((*queue* (list :a :b :c)))
     (setf (cdddr *queue*) *queue*)
@@ -132,13 +132,13 @@
   ;; unwound. Actually, the behavior of fn-cont2-2 is affected by fn-cont2.  So the
   ;; timing of unwinding should be carefully considered during debugging.
   (setf *cont* (lambda () 1))
-  (loop for i from 0 to 10 do (fn-cont1)))
+  (loop for i from 0 to 10 collect (fn-cont1)))
 (defun fn-cont2-2 ()
-  (loop for i from 0 to 3 do (fn-cont1)))
+  (loop for i from 0 to 3 collect (fn-cont1)))
 (defun fn-cont3 ()
-  (let ((queue (list :a :b :c))
-        (*cont* (lambda () (pop queue))))
-    (setf (cdddr *queue*) *queue*)
+  (let* ((queue (list :a :b :c))
+         (*cont* (lambda () (pop queue))))
+    (setf (cdddr queue) queue)
     (fn-cont2-2)
     (fn-cont2)
     (fn-cont2-2)))
@@ -147,6 +147,19 @@
 ;; and lower stack. Restart bindings are safe because they cannot be modified -- it
 ;; can only be wrapped around.
 
+;; now this is an exteded usage with a macro `in-reply-to'.
+
+(defun fn3-in-reply-to ()
+  (let ((lst (list :a :b :c)))
+    (setf (cdddr lst) lst)
+    (in-reply-to
+        (((arg :in fn1) (pop lst))
+         ((arg2 :in fn1) 1)
+         (arg2 (pop lst)))
+      (fn2))))
+
+
 (test ask-for
-  (finishes (fn1))
-  (finishes (fn3)))
+  (is (= 1 (fn1)))
+  (is (equal '(:a :b :c :a :b :c :a :b :c :a :b) (fn3)))
+  (is (equal '(:a :b :c :a :b :c :a :b :c :a :b) (fn3-in-reply-to))))
