@@ -124,3 +124,25 @@ the value of handler function."
 ;; (do-restart ((retry (lambda (c) (print :retry)))
 ;;           (continue (lambda (c) (print :retry))))
 ;;   (error "error!"))
+
+@export
+(define-condition ask-value (simple-condition)
+  ((name :initarg :name :accessor asked-name)
+   (emitter :initarg :emitter :accessor emitter :initform nil))
+  (:report
+   (lambda (c s)
+     (if (emitter c)
+         (format s "Function ~a is asking for a value for variable ~a."
+                 (emitter c) (name c))
+         (format s "Something is asking for a value for variable ~a."
+                 (name c))))))
+
+(export 'asked-name)
+
+@export
+(defmacro ask-for (x default &key in)
+  `(restart-case
+       (progn (signal 'ask-value :name ',x :emitter ',in)
+              ,default)
+     (use-value (value)
+       value)))
