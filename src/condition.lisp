@@ -128,21 +128,22 @@ the value of handler function."
 @export
 (define-condition ask-value (simple-condition)
   ((name :initarg :name :accessor asked-name)
-   (emitter :initarg :emitter :accessor emitter :initform nil))
+   (by :initarg :emitter :accessor asked-by :initform nil))
   (:report
    (lambda (c s)
-     (if (emitter c)
+     (if (asked-by c)
          (format s "Function ~a is asking for a value for variable ~a."
-                 (emitter c) (name c))
+                 (asked-by c) (asked-name c))
          (format s "Something is asking for a value for variable ~a."
-                 (name c))))))
+                 (asked-name c))))))
 
-(export 'asked-name)
+(export (list 'asked-name 'asked-by))
 
 @export
-(defmacro ask-for (x default &key in)
+(defmacro ask-for (thing default &key in)
+  "For the usage, see t/guicho-utilities.lisp ."
   `(restart-case
-       (progn (signal 'ask-value :name ',x :emitter ',in)
+       (progn (signal 'ask-value :name ',thing :emitter ',in)
               ,default)
      (use-value (value)
        value)))
