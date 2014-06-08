@@ -1,22 +1,169 @@
-* Guicho-Utilities  - Personal utilities for Masataro Asai(guicho2.71828@gmail.com).
+* Personal utilities.
 
-** Usage
+It has lots of functions, but below are those of my personal favorite:
 
-** Dependencies
+** *macro* with-iter-array
+
+/with-iter-array/ subscripts* array &body body
+
+Nested for-loops are gone forever.
+
+#+BEGIN_SRC lisp
+(with-iter-array (n i j) a
+  (when (plusp n)
+    (push (list i j) results)))
+#+END_SRC
+
+Specify the boundaries.
+
+#+BEGIN_SRC lisp
+(with-iter-array (n (i 1 2) j) a
+  (when (plusp n)
+    (push (list i j) results)))
+#+END_SRC
+
+Where the subscripts have the following meanings:
+
+#+BEGIN_EXAMPLE
+(symbol|(symbol upper-limit)
+       |(symbol lower-limit upper-limit)
+       |(symbol lower-limit upper-limit step))
+#+END_EXAMPLE
+
+** *macro* delegate-method
+
+/delegate-method/ (method-name (&rest var-class-form))
+
+Define a method in which the call is delegated to another object.
+A usual example is:
+
+#+BEGIN_SRC lisp
+(delegate-method m ((var class (slot-value 'some-slot var))))
+;; expands into
+(defmethod m ((var class))
+  (m (slot-value 'some-slot var)))
+#+END_SRC
+
+** *macro* define-permutation-methods
+
+Defines methods for each of the all possible permutation of
+the arguments. For example,
+
+#+BEGIN_SRC lisp
+(define-permutation-methods a ((a lst) (b vector) c)
+  (append a b))
+#+END_SRC
+
+is same as
+
+#+BEGIN_SRC lisp
+(PROGN
+ (DEFMETHOD A ((A LST) (B VECTOR) C) (APPEND A B))
+ (DEFMETHOD A ((A LST) C (B VECTOR)) (APPEND A B))
+ (DEFMETHOD A ((B VECTOR) (A LST) C) (APPEND A B))
+ (DEFMETHOD A ((B VECTOR) C (A LST)) (APPEND A B))
+ (DEFMETHOD A (C (A LST) (B VECTOR)) (APPEND A B))
+ (DEFMETHOD A (C (B VECTOR) (A LST)) (APPEND A B)))
+#+END_SRC
+
+** *macro* restart/handler-return
+
+/restart-return/ (bindings &body body)
+
+/handler-return/ (bindings &body body)
+
+The variation of =restart-case= whose behavior is the same but
+the semantics are that of RESTART-BIND.
+Just as RESTART-CASE, the condition is handled first (that is, it jumps
+out of the RESTART-BIND scope with GO) and then
+the restart function is called. Finally, RESTART-RETURN returns
+the value of restart function.
+
+#+BEGIN_SRC lisp
+(restart-return ((retry    (lambda (c) (print :retry)))
+                 (continue (lambda (c) (print :continue))))
+  (error "error!"))
+#+END_SRC
+
+** *macro* do-restart
+
+/do-restart/ (bindings &body body)
+
+A construct that, after a restart is invoked, it jumps to the start and reevaluate
+the body.
+
+#+BEGIN_SRC lisp
+(do-restart ((retry (lambda (c) (print :retry)))
+          (continue (lambda (c) (print :retry))))
+  (error "error!"))
+#+END_SRC
+
+** *macro* ask-for & *macro* in-reply-to
+
+Use restart to communicate a value through the stack frame.
+
+/ask-for/ (thing default &key in)
+
+/in-reply-to/ ((thing &key in)*) &body body
+
+#+BEGIN_SRC lisp
+(defun fn1 (&optional (arg (ask-for arg 1 :in fn1)))
+  (print arg))
+
+(defun fn2 ()
+  (loop for i from 0 to 10 collect (fn1)))
+
+(defun fn3 ()
+  (let ((lst (list :a :b :c)))
+    (setf (cdddr lst) lst)
+    (handler-bind ((ask-value
+                    (lambda (c)
+                      (when (and (eq 'arg (asked-name c))
+                                 (eq 'fn1 (asked-by c)))
+                        (use-value (pop lst) c)))))
+      (fn2))))
+
+;; now a macro `in-reply-to':
+
+(defun fn3-in-reply-to ()
+  (let ((lst (list :a :b :c)))
+    (setf (cdddr lst) lst)
+    (in-reply-to
+        (((arg :in fn1) (pop lst))
+         ((arg2 :in fn1) 1)
+         (arg2 (pop lst)))
+      (fn2))))
+#+END_SRC
+
+** *macro* break+
+
+Debug a value easily.
+
+/break+/ (&rest args)
+
+args can be of any form. it is evaluated and printed in the debugger frame.
+
+
+** *macro* print-environment
+
+: (print-environment)
+
+Insert it to see if things are compiled correctly.
+
+* Dependencies
 
 + iterate
 + alexandria
 + closer-mop
 + cl-annot
 
-** Author
+* Author
 
 + Masataro Asai (guicho2.71828@gmail.com)
 
 * Copyright
 
 Copyright (c) 2013 Masataro Asai (guicho2.71828@gmail.com)
-
 
 * License
 

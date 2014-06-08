@@ -4,6 +4,12 @@
 
 @export
 (defmacro restart-bind* (bindings &body body)
+"Analogous to the relation between let and let*.
+
+ (restart-bind* ((retry (lambda (c) (invoke-restart 'continue)))
+              (continue (lambda (c) (print :retry))))
+   (error \"error!\"))
+"
   `(restart-bind (,(car bindings))
      ,(if (cdr bindings)
           `(restart-bind* ,(cdr bindings)
@@ -12,6 +18,16 @@
 
 @export
 (defmacro handler-bind* (bindings &body body)
+"Analogous to the relation between let and let*.
+In standard handler-bind, the execution of the handler is
+'run in a dynamic environment where none of these handler bindings are visible (to
+avoid recursive errors).'
+ -- (http://www.lispworks.com/documentation/HyperSpec/Body/m_handle.htm)
+
+ (handler-bind* ((error    (lambda (c) (print :error)))
+                 (my-error (lambda (c) (print :my) (signal c))))
+   (error 'my-error))
+"
   `(handler-bind (,(car bindings))
      ,(if (cdr bindings)
           `(handler-bind* ,(cdr bindings)
@@ -57,7 +73,19 @@ the semantics are that of HANDLER-BIND.
 Just as HANDLER-CASE, the condition is handled first (that is, it jumps
 out of the HANDLER-BIND scope with GO) and then
 the handler function is called. Finally, HANDLER-RETURN returns
-the value of handler function."
+the value of handler function. Example:
+
+ (restart-return ((retry (lambda (c) (print :retry)))
+               (continue (lambda (c) (print :retry))))
+   (error \"error!\"))
+
+is equivalent to:
+
+ (restart-case
+     (error \"error!\")
+   (retry (c) (print :retry))
+   (continue (c) (print :retry)))
+"
 (defmacro handler-return (bindings &body body)
   (with-gensyms (block-name)
     (let ((bindings2
@@ -83,26 +111,19 @@ the value of handler function."
                  ,(mapcar #'second bindings2)
                ,@body)))))))
 
-
-;; (restart-return ((retry (lambda (c) (print :retry)))
-;;               (continue (lambda (c) (print :retry))))
-;;   (error "error!"))
-
-;; (restart-case
-;;     (error "error!")
-;;   (retry (c) (print :retry))
-;;   (continue (c) (print :retry)))
-
-;; (restart-bind* ((retry (lambda (c) (print :retry)))
-;;              (continue (lambda (c) (print :retry))))
-;;   (error "error!"))
-
 @export
 (defmacro do-restart (bindings &body body)
+  "A construct that, after a restart is invoked, it jumps to the start and reevaluate
+the body. Example:
+
+ (do-restart ((retry (lambda (c) (print :retry)))
+           (continue (lambda (c) (print :retry))))
+   (error \"error!\"))
+"
   (with-gensyms (start)
     `(block nil
        (tagbody
-        ,start
+          ,start
           (return
             (restart-bind
                 ,(mapcar
@@ -119,11 +140,6 @@ the value of handler function."
                                 ,@key-value-pair))))
                   bindings)
               ,@body))))))
-
-
-;; (do-restart ((retry (lambda (c) (print :retry)))
-;;           (continue (lambda (c) (print :retry))))
-;;   (error "error!"))
 
 @export
 (define-condition ask-value (simple-condition)
