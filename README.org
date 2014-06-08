@@ -4,13 +4,13 @@ It has lots of functions, but below are those of my personal favorite:
 
 ** *macro* with-iter-array
 
-/with-iter-array/ subscripts* array &body body
+/with-iter-array/ (var subscripts*) array &body body
 
 Nested for-loops are gone forever.
 
 #+BEGIN_SRC lisp
 (with-iter-array (n i j) a
-  (when (plusp n)
+  (when (plusp n) ;; n is the cell value
     (push (list i j) results)))
 #+END_SRC
 
