@@ -128,10 +128,7 @@ Use restart to communicate a value through the stack frame.
 (defun fn3-in-reply-to ()
   (let ((lst (list :a :b :c)))
     (setf (cdddr lst) lst)
-    (in-reply-to
-        (((arg :in fn1) (pop lst))
-         ((arg2 :in fn1) 1)
-         (arg2 (pop lst)))
+    (in-reply-to (((arg :in fn1) (pop lst)))
       (fn2))))
 #+END_SRC
 
