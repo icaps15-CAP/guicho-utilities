@@ -45,9 +45,21 @@ it is protected against the destructive operations.
 
 (defun fn3 ()
   (let ((lst (list :a :b :c)))
-    (setf (cdddr lst) lst)
+    (setf (cdddr lst) lst) ; circular list
     (in-reply-to (((arg :in fn1) (pop lst)))
       (fn2))))
+
+; :a
+; :b
+; ;c
+; :a
+; :b
+; ;c
+; :a
+; :b
+; ;c
+; :a
+NIL
 #+END_SRC
 
 ** *macro* break+
