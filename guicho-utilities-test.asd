@@ -16,7 +16,11 @@
                :fiveam)
   :components ((:module "t"
                 :components
-                ((:file "guicho-utilities"))))
+                ((:file "guicho-utilities")
+                 (:file :ask-for)
+                 (:file :categorize)
+                 (:file :combinations)
+                 (:file :with-iter-array))))
   :perform (load-op :after (op c) 
 		    (eval (read-from-string "(fiveam:run! :guicho-utilities)"))
 		    (asdf:clear-system c)))
