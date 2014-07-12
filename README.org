@@ -2,6 +2,23 @@
 
 It has lots of functions, but below are those of my personal favorite:
 
+** *macro* more-labels and *macro* define-local-function
+
+: (more-labels (&KEY (INLINE NIL)) DEFINITIONS &BODY BODY)
+
+    Enhanced version of `labels'. It can be used as labels, however it also
+    recognizes the local functions defined by `define-local-function'.
+    `definitions' are the standard `definitions' form available in `labels'
+    or a symbol denoting a local function.
+    
+: (NAME ARGS &BODY BODY)
+
+    Same as `defun', but also establishes a local function.
+    The functions defined by this macro can be used in `more-labels' later.
+
+Tips: Using local-function and more-labels, you can test a local definition.
+This is a great advantage over the standard flet and labels.
+
 ** *macro* with-iter-array
 
 /with-iter-array/ (var subscripts*) array &body body

@@ -99,3 +99,32 @@ is same as
   (setf (symbol-function name)
         fn))
 
+@export
+(defmacro define-local-function (name args &body body)
+  "Same as `defun', but also establishes a local function.
+ The functions defined by this macro
+ can be used in `more-labels' later.
+
+Tips: Using local-function and more-labels, you can test a local definition.
+This is a great advantage over the standard flet and labels.
+"
+  `(eval-when (:compile-toplevel :load-toplevel :execute)
+     (setf (get ',name :local-function) '(,name ,args ,@body))))
+
+@export
+(defmacro more-labels ((&key) definitions &body body)
+  "Enhanced version of `labels'. It can be used as labels, however it also
+recognizes the local functions defined by `define-local-function'.
+`definitions' are the standard `definitions' form available in `labels'
+or a symbol denoting a local function.
+"
+  `(labels
+       ,(mapcar
+         (lambda (def)
+           (etypecase def
+             (symbol
+              (get def :local-function))
+             (cons def)))
+         definitions)
+     ,@body))
+
