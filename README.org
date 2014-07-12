@@ -32,7 +32,7 @@ it is protected against the destructive operations.
   + slot /name/
   + slot /by/
 
-=ask-for= signals a condition =ask-value= and a restart =use-value=.
+=ask-for= signals a condition =ask-value= and provides a restart =use-value=.
 =in-reply-to= handles the condition and invokes the restart with the given value.
 
 
