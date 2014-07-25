@@ -76,10 +76,7 @@
                      (keys (class-slot-names c)))
                 `(lambda (&rest args &key ,@keys &allow-other-keys)
                    (declare (ignore ,@keys))
-                   (apply #'make-instance ,c args))))
-     ;; (setf (fdefinition ',class-spec)
-     ;;            )
-     ))
+                   (apply #'make-instance ,c args))))))
 
 (defun form-reader-method (c name)
   (check-type name symbol)
