@@ -6,6 +6,29 @@
 (declaim (inline ^2 d^2 ->rad ->deg kph->mpms mpms->kph))
 
 @export
+(defun density-char (n)
+  (case n
+    (0 #\Space)
+    (1 #\.)
+    (2 #\,)
+    (3 #\:)
+    (4 #\;)
+    (5 #\i)
+    (6 #\j)
+    (7 #\!)
+    (8 #\|)
+    (9 #\l)
+    (10 #\I)
+    (11 #\k)
+    (12 #\K)
+    (13 #\M)
+    (14 #\W)
+    (15 #\#)
+    (16 #\0)
+    (17 #\@)
+    (t  #\■)))
+
+@export
 (defun ^2 (x) (* x x))
 
 @export
