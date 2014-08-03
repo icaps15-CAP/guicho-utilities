@@ -2,6 +2,8 @@
 (in-package :guicho-utilities)
 (use-syntax :annot)
 
+;;;; check the object inheritance
+
 @export
 (defgeneric check-object-inherits-class (obj class))
 (delegate-method check-object-inherits-class
@@ -55,11 +57,10 @@
   (when (third class-order)
     (check-object-inherits-class-in-orders obj (cdr class-order))))
 
+;;;; constructors
 
-@eval-always
 @export
 (defun class-slot-names (c)
-  (ensure-finalized c)
   (mapcar #'slot-definition-name (class-slots c)))
 
 @export
@@ -75,6 +76,25 @@
                 `(lambda (&rest args &key ,@keys &allow-other-keys)
                    (declare (ignore ,@keys))
                    (apply #'make-instance ,c args))))))
+
+;;;; make-load-form
+
+@export
+(defmacro define-load-form (class-spec)
+  (call-define-load-form class-spec))
+
+(defun call-define-load-form (class-spec)
+  (check-type class-spec symbol)
+  `(eval-when (:load-toplevel :execute)
+     (let* ((c )
+            (keys ))
+       (defmethod make-load-form ((i ,class-spec) &optional env)
+         (make-load-form-saving-slots
+          i :slot-names
+          (class-slot-names (find-class ',class-spec))
+          :environment env)))))
+
+;;;; slot readers
 
 (defun form-reader-method (c name)
   (check-type name symbol)
