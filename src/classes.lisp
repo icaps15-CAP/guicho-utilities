@@ -80,19 +80,21 @@
 ;;;; make-load-form
 
 @export
-(defmacro define-load-form (class-spec)
-  (call-define-load-form class-spec))
+(defmacro define-load-form (class-spec &optional sans-functions)
+  (call-define-load-form class-spec sans-functions))
 
-(defun call-define-load-form (class-spec)
+(defun call-define-load-form (class-spec sans-functions)
   (check-type class-spec symbol)
   `(eval-when (:load-toplevel :execute)
-     (let* ((c )
-            (keys ))
+     (let ((slot-names
+            ,(if sans-functions
+                 `(mapcar #'slot-definition-name
+                          (remove 'function (class-slots (find-class ',class-spec))
+                                  :key #'slot-definition-type))
+                 `(class-slot-names (find-class ',class-spec)))))
        (defmethod make-load-form ((i ,class-spec) &optional env)
          (make-load-form-saving-slots
-          i :slot-names
-          (class-slot-names (find-class ',class-spec))
-          :environment env)))))
+          i :slot-names slot-names :environment env)))))
 
 ;;;; slot readers
 
