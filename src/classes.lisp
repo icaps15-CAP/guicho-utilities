@@ -61,6 +61,7 @@
 
 @export
 (defun class-slot-names (c)
+  (finalize-inheritance c)
   (mapcar #'slot-definition-name (class-slots c)))
 
 @export
