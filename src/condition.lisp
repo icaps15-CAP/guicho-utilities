@@ -159,7 +159,7 @@ the body. Example:
 (defmacro ask-for (thing default &key in)
   "For the usage, see t/guicho-utilities.lisp ."
   `(restart-case
-       (progn (signal 'ask-value :name ',thing :emitter ',in)
+       (progn (signal 'ask-value :name ',thing :emitter ,(if in `(quote ,in) nil))
               ,default)
      (use-value (value)
        value)))
@@ -179,14 +179,13 @@ the body. Example:
           (handler-bind ((match-error
                           (lambda (c)
                             (error "Clause ~a is invalid as a variable specifier"
-                                   (match-error-values c))))) 
+                                   (match-error-values c)))))
             (ematch clause
               ((list* (list name (or :in :by) by) value-body)
-               `((ask-value :name (guard name (eq ',name name))
-                            :by (guard by (eq ',by by)))
-                 (use-value (progn ,@value-body) c)))
+               `((ask-value :name (eq ',name) :by (eq ',by))
+                 (invoke-restart (find-restart 'use-value c) (progn ,@value-body))))
               ((list* (or (and (type symbol) name)
                           (list (and (type symbol) name))) value-body)
-               `((ask-value :name (guard name (eq ',name name)))
-                 (use-value (progn ,@value-body) c))))))
+               `((ask-value :name (eq ',name))
+                 (invoke-restart (find-restart 'use-value c) (progn ,@value-body)))))))
         clauses)))
