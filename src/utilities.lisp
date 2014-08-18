@@ -272,9 +272,10 @@ However we sometimes want to categorize 3,4,5,7,8,9 by adjacency e.g.
 @export
 (defun mktemp (&optional (name "lisp") verbose)
   (iter (for path = (merge-pathnames
-                     (format nil "~a.tmp.~x"
+                     (format nil "~a.lisptmp.~x"
                              (string-downcase name)
                              (random MOST-POSITIVE-FIXNUM))
                      #p"/tmp/"))
-        (ensure-directories-exist path :verbose verbose)
-        (return-from mktemp path)))
+        (unless (probe-file path)
+          (ensure-directories-exist path :verbose verbose)
+          (return-from mktemp path))))
