@@ -109,6 +109,9 @@ Tips: Using local-function and more-labels, you can test a local definition.
 This is a great advantage over the standard flet and labels.
 "
   `(eval-when (:compile-toplevel :load-toplevel :execute)
+     (defun ,name ,args
+       (error "~a was called outside more-labels macro!~& Args:~a"
+              ',name (list ,@(mapcar (lambda (x) `(quote ,x)) args))))
      (setf (get ',name :local-function) '(,name ,args ,@body))))
 
 @export
