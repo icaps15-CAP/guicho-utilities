@@ -268,14 +268,19 @@ However we sometimes want to categorize 3,4,5,7,8,9 by adjacency e.g.
 (defmacro label1 (name args (&body fbody) &body body)
   `(labels ((,name ,args ,fbody)) ,@body))
 
-
+(defun %query-path (name)
+  (let ((path (merge-pathnames
+               (format nil "~a.lisptmp.~x"
+                       (string-downcase name)
+                       (random MOST-POSITIVE-FIXNUM))
+               #p"/tmp/")))
+    (if (probe-file path) nil path)))
+        
+    
+  
 @export
 (defun mktemp (&optional (name "lisp") verbose)
-  (iter (for path = (merge-pathnames
-                     (format nil "~a.lisptmp.~x"
-                             (string-downcase name)
-                             (random MOST-POSITIVE-FIXNUM))
-                     #p"/tmp/"))
-        (unless (probe-file path)
+  (iter (for path = (%query-path name))
+        (when path
           (ensure-directories-exist path :verbose verbose)
           (return-from mktemp path))))
