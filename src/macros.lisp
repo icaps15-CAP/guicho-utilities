@@ -99,6 +99,9 @@ is same as
   (setf (symbol-function name)
         fn))
 
+(defun &-keywordp (symbol)
+  (char= #\& (aref (symbol-name symbol) 0)))
+
 @export
 (defmacro define-local-function (name args &body body)
   "Same as `defun', but also establishes a local function.
@@ -110,8 +113,13 @@ This is a great advantage over the standard flet and labels.
 "
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (defun ,name ,args
+       (declare (ignorable ,@(remove-if #'&-keywordp args)))
        (error "~a was called outside more-labels macro!~& Args:~a"
-              ',name (list ,@(mapcar (lambda (x) `(quote ,x)) args))))
+              ',name (list ,@(mappend (lambda (x)
+                                        (if (&-keywordp x)
+                                            `((quote ,x))
+                                            `((quote ,x) ,x)))
+                                      args))))
      (setf (get ',name :local-function) '(,name ,args ,@body))))
 
 @export
