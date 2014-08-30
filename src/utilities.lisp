@@ -200,8 +200,12 @@ Each element is stored in a list (bucket) in the table."
     hash))
 
 @export
-@doc "Categorize the elements of SEQUENCE according to the 2-arg equality function TEST.
- Returns a vector of lists. Each list contains elements which are equal in the meaning of TEST."
+@doc "Categorize the elements of SEQUENCE according to the 2-arg
+equality function TEST.  Returns a vector of lists. Each list contains
+elements which are equal in the meaning of TEST.  When the
+keyword :transitive is non-nil, it assumes the test function is transitive,
+and it uses the algorithm that can benefit from the lazy evaluation
+in the test function."
 (defun categorize-by-equality (sequence test &key (transitive t))
   (if transitive
       (%categorize-by-equality-transitive sequence test)
