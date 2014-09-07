@@ -275,12 +275,12 @@ However we sometimes want to categorize 3,4,5,7,8,9 by adjacency e.g.
 (defun %query-path (name)
   (let ((path (merge-pathnames
                #+sbcl
-               (format nil "~a.lisptmp.~a.~x"
+               (format nil "lisptmp/~a.~a.~x"
                        (string-downcase name)
                        (sb-posix:getpid)
                        (random MOST-POSITIVE-FIXNUM))
                #-sbcl
-               (format nil "~a.lisptmp.~x"
+               (format nil "lisptmp/~a.~x"
                        (string-downcase name)
                        (random MOST-POSITIVE-FIXNUM))
                #p"/tmp/")))
