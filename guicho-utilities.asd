@@ -21,7 +21,7 @@ Author: guicho (guicho2.71828@gmail.com)
   :depends-on (:iterate
 		:alexandria
                 :anaphora
-		:trivial-cltl2
+		:introspect-environment
 		:swank
                 :optima
                 :closer-mop
