@@ -17,4 +17,6 @@
   (:shadowing-import-from :cl
                           :standard-generic-function
                           :defmethod
-                          :defgeneric))
+                          :defgeneric
+                          :standard-method
+                          :standard-class))
