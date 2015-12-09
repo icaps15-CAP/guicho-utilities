@@ -10,7 +10,7 @@
         :annot.eval-when
         :annot.doc
         :annot.slot
-        :optima
+        :trivia
         :iterate
         :alexandria
         :closer-mop)
