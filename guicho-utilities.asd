@@ -23,7 +23,7 @@ Author: guicho (guicho2.71828@gmail.com)
                 :anaphora
 		:introspect-environment
 		:swank
-                :optima
+                :trivia
                 :closer-mop
 		:cl-syntax-annot)
   :components ((:module "src"
