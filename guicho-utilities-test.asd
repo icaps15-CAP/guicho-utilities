@@ -22,6 +22,4 @@
                  (:file :combinations)
                  (:file :with-iter-array)
                  (:file :more-labels))))
-  :perform (load-op :after (op c) 
-		    (eval (read-from-string "(fiveam:run! :guicho-utilities)"))
-		    (asdf:clear-system c)))
+  :perform (test-op :after (op c) (eval (read-from-string "(fiveam:run! :guicho-utilities)"))))
