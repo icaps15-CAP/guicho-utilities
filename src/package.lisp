@@ -4,7 +4,6 @@
   (:use :cl
         :cl-syntax
         :introspect-environment
-        :anaphora
         :annot
         :annot.class
         :annot.eval-when
