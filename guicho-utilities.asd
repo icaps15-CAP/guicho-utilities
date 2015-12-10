@@ -22,7 +22,6 @@ Author: guicho (guicho2.71828@gmail.com)
 		:alexandria
                 :anaphora
 		:introspect-environment
-		:swank
                 :trivia
                 :closer-mop
 		:cl-syntax-annot)
