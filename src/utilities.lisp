@@ -78,8 +78,8 @@
 
 @export
 (defun collect-on-reader (s reader fn reduce-fn)
-  (awhen (map 'list fn (funcall reader s))
-         (reduce reduce-fn it)))
+  (when-let ((it (map 'list fn (funcall reader s))))
+    (reduce reduce-fn it)))
 
 
 @export
